@@ -11,7 +11,7 @@ import (
 )
 
 func createUser(user *models.Users) (string, error) {
-	client, ctx, cancel := getConnection()
+	client, ctx, cancel := GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
 	password := []byte(user.Password)
@@ -29,7 +29,7 @@ func createUser(user *models.Users) (string, error) {
 	return uid, err
 }
 func editUser(userId string, user *models.Users) (int64, error) {
-	client, ctx, cancel := getConnection()
+	client, ctx, cancel := GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
 	password := []byte(user.Password)

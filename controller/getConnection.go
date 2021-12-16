@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func getConnection() (*mongo.Client, context.Context, context.CancelFunc) {
+func GetConnection() (*mongo.Client, context.Context, context.CancelFunc) {
 
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017/post_db"))
 	if err != nil {

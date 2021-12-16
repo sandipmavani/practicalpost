@@ -13,7 +13,7 @@ import (
 func GetUser(c *gin.Context) {
 	var user models.Users
 	username := c.Param("username")
-	client, ctx, cancel := getConnection()
+	client, ctx, cancel := GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
 	err := client.Database("post_db").Collection("users").FindOne(ctx, bson.M{"username": username}).Decode(&user)
@@ -28,7 +28,7 @@ func GetUser(c *gin.Context) {
 func GetAllUser(c *gin.Context) {
 	var userList []models.Users
 
-	client, ctx, cancel := getConnection()
+	client, ctx, cancel := GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
 
