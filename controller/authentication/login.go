@@ -23,6 +23,7 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+//login API
 func LoginController(c *gin.Context) {
 	var loginRequest LoginRequest
 	var userResponse models.Users
@@ -49,20 +50,20 @@ func LoginController(c *gin.Context) {
 			log.Fatal(err)
 		}
 	}
-	fmt.Println(userResponse.Email)
+
 	loginResponse = verifyUserHash(userResponse, loginRequest)
-	fmt.Println(loginResponse)
 	if loginResponse.authenticated && loginResponse.user {
-		c.JSON(200, gin.H{
-			"token": GenerateToken(userResponse.Email, true),
+		c.JSON(http.StatusOK, gin.H{
+			"token": GenerateToken(userResponse.Email, userResponse.Id.Hex(), true),
 		})
 	} else {
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Invalid Email or Password",
 		})
 	}
 }
 
+// here we check email is exsist and compare hash password with db password
 func verifyUserHash(response models.Users, user LoginRequest) LoginResponse {
 	if len(strings.TrimSpace(response.Email)) == 0 {
 

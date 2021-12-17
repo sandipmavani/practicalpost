@@ -2,7 +2,6 @@ package authentication
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -15,24 +14,26 @@ type JWT interface {
 
 type authCustomClaims struct {
 	Email string `json:"email"`
+	ID    string `json:"id"`
 	User  bool   `json:"user"`
 	jwt.StandardClaims
 }
 
 func getSecretKey() string {
-	secret := os.Getenv("SECRET")
-	if secret == "" {
-		secret = "secret"
-	}
-	return secret
+	//secret := os.Getenv("SECRET")
+	// if secret == "" {
+	// 	secret = "secret"
+	// } //here we get secret from env but currently i not read env.
+	return "secret"
 }
-func GenerateToken(email string, isUser bool) string {
+func GenerateToken(email string, id string, isUser bool) string {
 	claims := &authCustomClaims{
 		email,
+		id,
 		isUser,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
-			Issuer:    email,
+			Issuer:    id,
 			IssuedAt:  time.Now().Unix(),
 		},
 	}

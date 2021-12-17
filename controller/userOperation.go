@@ -10,15 +10,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func createUser(user *models.Users) (string, error) {
+// here we perform create opertion of user
+func CreateUser(user *models.Users) (string, error) {
 	client, ctx, cancel := GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
 	password := []byte(user.Password)
-	newPassword, _ := bcrypt.GenerateFromPassword(password, 10)
+	newPassword, _ := bcrypt.GenerateFromPassword(password, 10) // we dcrypt password before save
 	user.Password = string(newPassword)
 
-	user.Id = primitive.NewObjectID()
+	user.Id = primitive.NewObjectID() //generate new user id
 
 	result, err := client.Database("post_db").Collection("users").InsertOne(ctx, user)
 	if err != nil {
@@ -28,12 +29,14 @@ func createUser(user *models.Users) (string, error) {
 	uid := result.InsertedID.(primitive.ObjectID).Hex()
 	return uid, err
 }
-func editUser(userId string, user *models.Users) (int64, error) {
+
+// here we perform edit opertion of user
+func EditUser(userId string, user *models.Users) (int64, error) {
 	client, ctx, cancel := GetConnection()
 	defer cancel()
 	defer client.Disconnect(ctx)
 	password := []byte(user.Password)
-	newPassword, _ := bcrypt.GenerateFromPassword(password, 10)
+	newPassword, _ := bcrypt.GenerateFromPassword(password, 10) // we dcrypt password before save
 	user.Password = string(newPassword)
 	id, _ := primitive.ObjectIDFromHex(userId)
 
@@ -49,7 +52,7 @@ func editUser(userId string, user *models.Users) (int64, error) {
 	result, err := client.Database("post_db").Collection("users").UpdateOne(ctx, filter, update)
 	if err != nil {
 		log.Println(err)
-		log.Printf("Couldn't create the user")
+		log.Printf("Couldn't update the user")
 	}
 	updateCount := result.ModifiedCount
 	return updateCount, err
